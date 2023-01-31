@@ -19,11 +19,11 @@ import dataset
 
 
 def test(args, model, device):
+    model.eval()
     Pred = []
     target_label = []
     avr = 0
     data_test = np.asarray(pd.read_csv(args.test_path))
-    # print(data_test.shape)
     data_test[:,187] = data_test[:,187].astype('int') 
     for i, sample in enumerate(data_test):
         batch_input = data_test[i, :-1]

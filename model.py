@@ -91,7 +91,7 @@ class CNN(nn.Module):
             nn.Conv1d(in_channels = 64, out_channels = 64, kernel_size = 7,
                                                                padding= 1,
                                                                stride = 2),
-            # nn.Dropout(0.2),
+            nn.Dropout(0.4),
             nn.BatchNorm1d(64),
             nn.ReLU()
             )
@@ -103,8 +103,6 @@ class CNN(nn.Module):
         self.linear3 = nn.Linear(in_features= 100, 
                                 out_features= args.num_classes)
         self.relu = nn.ReLU()
-        self.drop_out1 = nn.Dropout(0.2)
-        self.drop_out2 = nn.Dropout(0.15)
         self.softmax  = nn.Softmax(dim=1)
         
     def forward (self, x):
@@ -112,7 +110,6 @@ class CNN(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
-        # print(x.shape)
         s = x.shape 
         x = x.view(s[0], -1)
         
@@ -122,7 +119,6 @@ class CNN(nn.Module):
         x = self.relu(x)
         x = self.linear3(x)
         x = self.softmax(x)
-        # print("44444444444", x.shape)
         return x
       
     

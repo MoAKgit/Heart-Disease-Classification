@@ -56,8 +56,6 @@ if __name__ == '__main__':
     data_train = np.asarray(pd.read_csv(args.train_path))
     
     
-    
-    
     df_0 = data_train[data_train[:,187] == 0]
     df_1 = data_train[data_train[:,187] == 1]
     df_2 = data_train[data_train[:,187] == 2]
@@ -78,33 +76,26 @@ if __name__ == '__main__':
     df_4_upsample = resample(df_4, n_samples = 72470, replace = True, random_state = 123)
     
     
-    # df_0_upsample = np.asarray(df_0_upsample)
     df_1_upsample = np.asarray(df_1_upsample)
     df_2_upsample = np.asarray(df_2_upsample)
     df_3_upsample = np.asarray(df_3_upsample)
     df_4_upsample = np.asarray(df_4_upsample)
     
-    # print('111111111111',df_4_upsample.shape)
-
     data_train = np.concatenate((df_0, 
                                  df_1_upsample, 
                                  df_2_upsample, 
                                  df_3_upsample, 
                                  df_4_upsample))
-    # print(data_train.shape)
     data_train[:,187] = data_train[:,187].astype('int') 
     
 
     data_test = np.asarray(pd.read_csv(args.test_path))
-    # print()
     
     net = CNN(args).to(device)
-    # net = CNNLSTM(args).to(device)
     
     
     optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
     criterian = nn.CrossEntropyLoss()
-    # criterian = nn.MSELoss()
 
     loss_history = []
     
@@ -116,18 +107,16 @@ if __name__ == '__main__':
         max_itr = int(len(data_train) / args.batch_size - 1)
         for i in tqdm(range(max_itr)):
             
+            net.train()
+            
             batch_data = data_train[ i*args.batch_size : (i+1)*args.batch_size, :]
             
             batch_input = batch_data[:, :-1]
             batch_label = batch_data[:, -1]
-            # print(batch_input.shape)
             batch_input = np.asarray(batch_input, dtype= 'float32' )
             batch_input = np.expand_dims(batch_input, 1)
             batch_input = torch.from_numpy(batch_input).to(device)
-            # print(batch_input.shape)
             batch_label = np.asarray(batch_label, dtype= 'int64' )
-            
-            
             batch_label = torch.from_numpy(batch_label).to(device)
 
             pred = net(batch_input)
